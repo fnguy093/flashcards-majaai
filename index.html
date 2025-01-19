@@ -170,6 +170,25 @@
         </ul>
     </div>
     <script>
+        function renameDeck(button) {
+            const deckItem = button.closest(".deck-item");
+            const deckName = deckItem.querySelector("h2");
+            const oldName = deckName.textContent;
+            const newName = prompt("Enter the new name for the deck:", oldName);
+
+            if (newName && newName !== oldName) {
+                // Update the name in the UI
+                deckName.textContent = newName;
+
+                // Update the name in localStorage
+                const decks = JSON.parse(localStorage.getItem("decks")) || [];
+                const deckIndex = decks.findIndex(deck => deck.name === oldName);
+                if (deckIndex !== -1) {
+                    decks[deckIndex].name = newName; // Update the deck's name in the array
+                    localStorage.setItem("decks", JSON.stringify(decks)); // Save the updated array back to localStorage
+                }
+            }
+        }
         function loadDecks() {
             const deckList = document.getElementById("deckList");
             deckList.innerHTML = ""; // Clear current deck list

@@ -3,126 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="study_mode.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <title>Study Mode</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        .study-mode {
-            text-align: center;
-        }
-        .flashcard {
-            margin-top: 20px;
-            font-size: 20px;
-        }
-        .study-btn {
-            background-color: #007bff;
-            color: white;
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            border: none;
-            border-radius: 4px;
-        }
-    </style>
 </head>
 <body>
+    <header class="header">
+        <div class="logo">MajaAI</div>
+    </header>
 
     <div class="container">
         <div class="study-mode">
             <h1>Study Mode</h1>
-            <div id="flashcard" class="flashcard">
-                <!-- Flashcard content goes here -->
+            <div class="container2">
+            <div class="flip-card">
+                <div class="flip-card-inner" id="flashcard">
+                    <div class="flip-card-front">
+                        <h3 id="question">Question</h3>
+                    </div>
+                    <div class="flip-card-back">
+                        <p id="answer">Answer</p>
+                    </div>
+                </div>
+            </div>
             </div>
             <button class="study-btn" onclick="showAnswer()">Show Answer</button>
             <button class="study-btn" onclick="nextFlashcard()">Next</button>
         </div>
     </div>
+    
 
     <script>
-        let deckName = new URLSearchParams(window.location.search).get("deckName"); // Get the deck name from the query string
-        let flashcards = [];
-        let currentCardIndex = 0;
+let deckName = new URLSearchParams(window.location.search).get("deckName");
+let flashcards = [];
+let currentCardIndex = 0;
 
-        // Load flashcards for the selected deck from localStorage
-        function loadFlashcards() {
-            const decks = JSON.parse(localStorage.getItem("decks")) || []; // Load all decks from localStorage
-            const deck = decks.find(d => d.name === deckName); // Find the specific deck by name
-            
-            if (deck && deck.flashcards) {
-                flashcards = deck.flashcards; // Set flashcards to the deck's flashcards
-                showFlashcard(); // Display the first flashcard
-            } else {
-                document.getElementById('flashcard').innerHTML = `
-                    <p>No flashcards found for the selected deck. Go back and add flashcards!</p>
-                `;
-            }
-        }
+function loadFlashcards() {
+    const decks = JSON.parse(localStorage.getItem("decks")) || [];
+    const deck = decks.find(d => d.name === deckName);
 
-        // Show the current flashcard (question only)
-        function showFlashcard() {
-            if (flashcards.length > 0 && currentCardIndex < flashcards.length) {
-                const card = flashcards[currentCardIndex];
-                document.getElementById('flashcard').innerHTML = `
-                    <div>
-                        <h3>Question: ${card.question}</h3>
-                        <p id="answer" class="answer">Answer: ${card.answer}</p>
-                    </div>
-                `;
-                hideAnswer(); // Ensure the answer is hidden when a new flashcard is shown
-            }
-        }
+    if (deck && deck.flashcards) {
+        flashcards = deck.flashcards;
+        showFlashcard();
+    } else {
+        document.getElementById("flashcard").innerHTML = `No flashcards found for the selected deck. Go back and add flashcards!`;
+    }
+}
 
-        // Show the next flashcard
-        function nextFlashcard() {
-            if (flashcards.length > 0) {
-                currentCardIndex = (currentCardIndex + 1) % flashcards.length; // Loop back to the start
-                showFlashcard();
-            }
-        }
+function showFlashcard() {
+    if (flashcards.length > 0 && currentCardIndex < flashcards.length) {
+        const card = flashcards[currentCardIndex];
+        document.getElementById("question").innerText = card.question;
+        document.getElementById("answer").innerText = card.answer;
 
-        // Show the answer for the current flashcard
-        function showAnswer() {
-            const answerElement = document.getElementById("answer");
-            if (answerElement) {
-                answerElement.style.display = "block"; // Reveal the answer
-            }
-        }
+        // Reset the card to show the front side
+        document.querySelector(".flip-card-inner").style.transform = "rotateY(0deg)";
+    } else {
+        document.getElementById("flashcard").innerHTML = `No flashcards found for the selected deck.`;
+    }
+}
 
-        // Hide the answer for the current flashcard
-        function hideAnswer() {
-            const answerElement = document.getElementById("answer");
-            if (answerElement) {
-                answerElement.style.display = "none"; // Hide the answer
-            }
-        }
+function showAnswer() {
+    // Flip the card to show the back side
+    document.querySelector(".flip-card-inner").style.transform = "rotateY(180deg)";
+}
 
-        // Add an event listener for the "Space" key
-        document.addEventListener("keydown", (event) => {
-            if (event.code === "Space") {
-                event.preventDefault(); // Prevent scrolling when pressing Space
-                const answerElement = document.getElementById("answer");
-                if (answerElement && answerElement.style.display === "none") {
-                    showAnswer(); // Show the answer if it's hidden
-                } else if (answerElement) {
-                    nextFlashcard(); // Show the next card if the answer is already visible
-                }
-            }
-        });
+function nextFlashcard() {
+    if (flashcards.length > 0) {
+        currentCardIndex = (currentCardIndex + 1) % flashcards.length;
+        showFlashcard();
+    }
+}
 
-        // Load flashcards when the page is ready
-        document.addEventListener("DOMContentLoaded", loadFlashcards);
+document.addEventListener("DOMContentLoaded", loadFlashcards);
     </script>
 
 </body>

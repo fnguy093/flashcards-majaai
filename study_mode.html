@@ -31,6 +31,9 @@
             </div>
             <button class="study-btn" onclick="showAnswer()">Show Answer</button>
             <button class="study-btn" onclick="nextFlashcard()">Next</button>
+            <div id="difficulty-options" style="display: none;">
+
+
         </div>
     </div>
     
@@ -65,9 +68,30 @@ function showFlashcard() {
     }
 }
 
+function showDifficultyOptions() {
+            const difficultyOptions = document.getElementById("difficulty-options");
+            difficultyOptions.innerHTML = `
+                <button class="difficulty-btn" onclick="setDifficulty('easy')">Easy</button>
+                <button class="difficulty-btn" onclick="setDifficulty('good')">Good</button>
+                <button class="difficulty-btn" onclick="setDifficulty('hard')">Hard</button>
+            `;
+            difficultyOptions.style.display = "block";
+        }
+
+        function setDifficulty(difficulty) {
+            flashcards[currentCardIndex].difficulty = difficulty;
+
+            nextFlashcard();
+        }
 function showAnswer() {
     // Flip the card to show the back side
-    document.querySelector(".flip-card-inner").style.transform = "rotateY(180deg)";
+    document.querySelector(".flip-card-inner").style.transform = "rotateY(180deg)";                showDifficultyOptions();
+    const answerElement = document.getElementById("answer");
+            if (answerElement) {
+                answerElement.style.display = "block"; 
+                showDifficultyOptions();
+
+}
 }
 
 function nextFlashcard() {

@@ -55,6 +55,9 @@ body {
     align-items: center;
     text-align: center;
     font-weight: 400;
+    font-size: 20;
+    padding-top: 50;
+    padding-bottom: 50;
 }
 
 .flip-card-front {

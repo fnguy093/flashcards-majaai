@@ -146,6 +146,17 @@
         .add-flashcard-btn:hover {
             background-color: #19AF4D;
         }
+        .study-btn {
+                background-color: #19AF4D;
+                color: white;
+                padding: 10px;
+                font-size: 16px;
+                text-decoration: none;
+                cursor: pointer;
+                border: none;
+                border-radius: 4px;
+                font-family: "Poppins", Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
@@ -153,6 +164,7 @@
         <div class="header">
             <h1>Your Decks</h1>
             <button class="add-deck-btn" onclick="addDeck()">Add Deck</button>
+            <a href="https://www.surveymonkey.com/r/DWZSW55" class="study-btn">Feedback</a>
         </div>
         <ul class="deck-list" id="deckList">
         </ul>
@@ -239,8 +251,6 @@
 
         window.onload = loadDecks;
     </script>
-
-    <script>(function(t,e,s,n){var o,a,c;t.SMCX=t.SMCX||[],e.getElementById(n)||(o=e.getElementsByTagName(s),a=o[o.length-1],c=e.createElement(s),c.type="text/javascript",c.async=!0,c.id=n,c.src="https://widget.surveymonkey.com/collect/website/js/tRaiETqnLgj758hTBazgdzMMsaxa4L4VjkVjarTUQvqwLxkfiD6Lhnjq2dve9_2Buo.js",a.parentNode.insertBefore(c,a))})(window,document,"script","smcx-sdk");</script>
 
 </body>
 </html>

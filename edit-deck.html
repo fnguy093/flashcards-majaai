@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
-    <title>MajaAI</title>
+    <title>Flashcard Manager</title>
     <style>
         body {
-            font-family: "Poppins", Arial, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -91,8 +88,7 @@
     <div class="container">
         <div class="header">
             <h1>Manage Flashcards</h1>
-            <!-- Button to go to Study Mode Page -->
-            <a href="study_mode.html?deckName=yourDeckName">
+            <a id="studyModeLink" href="#">
                 <button>Go to Study Mode</button>
             </a>
         </div>
@@ -112,19 +108,25 @@
     <script>
         let deckName = new URLSearchParams(window.location.search).get("deckName");
 
-        // Load flashcards for the specific deck
+        if (!deckName) {
+            alert("Deck name is missing in the URL!");
+            window.location.href = 'index.html';
+        } else {
+            document.getElementById("studyModeLink").href = `study_mode.html?deckName=${encodeURIComponent(deckName)}`;
+        }
+
         function loadFlashcards() {
             const decks = JSON.parse(localStorage.getItem("decks")) || [];
             const deck = decks.find(d => d.name === deckName);
-            
-            if (deck && deck.flashcards) {
-                const flashcardList = document.getElementById("flashcardList");
-                flashcardList.innerHTML = ''; // Clear current flashcards
 
+            const flashcardList = document.getElementById("flashcardList");
+            flashcardList.innerHTML = ''; // Clear current list
+
+            if (deck && deck.flashcards && deck.flashcards.length > 0) {
                 deck.flashcards.forEach((card, index) => {
                     const flashcardItem = document.createElement("li");
                     flashcardItem.className = "flashcard-item";
-                    flashcardItem.innerHTML = `  
+                    flashcardItem.innerHTML = `
                         <div>
                             <h3>Q: ${card.question}</h3>
                             <p>A: ${card.answer}</p>
@@ -136,13 +138,16 @@
                     `;
                     flashcardList.appendChild(flashcardItem);
                 });
+            } else {
+                const emptyMessage = document.createElement("p");
+                emptyMessage.textContent = "No flashcards available. Add your first flashcard!";
+                flashcardList.appendChild(emptyMessage);
             }
         }
 
-        // Add a flashcard to the current deck
         function addFlashcard() {
-            const question = document.getElementById("flashcardQuestion").value;
-            const answer = document.getElementById("flashcardAnswer").value;
+            const question = document.getElementById("flashcardQuestion").value.trim();
+            const answer = document.getElementById("flashcardAnswer").value.trim();
 
             if (question && answer) {
                 const decks = JSON.parse(localStorage.getItem("decks")) || [];
@@ -151,10 +156,9 @@
                 if (deck) {
                     deck.flashcards.push({ question, answer });
                     localStorage.setItem("decks", JSON.stringify(decks));
-                    loadFlashcards(); // Reload flashcards
+                    loadFlashcards();
                 }
 
-                // Clear form inputs
                 document.getElementById("flashcardQuestion").value = '';
                 document.getElementById("flashcardAnswer").value = '';
             } else {
@@ -162,7 +166,6 @@
             }
         }
 
-        // Delete a flashcard from the current deck
         function deleteFlashcard(index) {
             const decks = JSON.parse(localStorage.getItem("decks")) || [];
             const deck = decks.find(d => d.name === deckName);
@@ -170,31 +173,28 @@
             if (deck) {
                 deck.flashcards.splice(index, 1);
                 localStorage.setItem("decks", JSON.stringify(decks));
-                loadFlashcards(); // Reload flashcards
+                loadFlashcards();
             }
         }
 
-        // Edit a flashcard in the current deck
         function editFlashcard(index) {
             const decks = JSON.parse(localStorage.getItem("decks")) || [];
             const deck = decks.find(d => d.name === deckName);
 
             if (deck) {
                 const card = deck.flashcards[index];
-                const question = prompt("Edit question:", card.question);
-                const answer = prompt("Edit answer:", card.answer);
+                const question = prompt("Edit question:", card.question) || card.question;
+                const answer = prompt("Edit answer:", card.answer) || card.answer;
 
-                if (question && answer) {
-                    deck.flashcards[index] = { question, answer };
-                    localStorage.setItem("decks", JSON.stringify(decks));
-                    loadFlashcards(); // Reload flashcards
-                }
+                deck.flashcards[index] = { question, answer };
+                localStorage.setItem("decks", JSON.stringify(decks));
+                loadFlashcards();
             }
         }
 
         document.addEventListener("DOMContentLoaded", loadFlashcards);
-
     </script>
 
 </body>
+
 </html>

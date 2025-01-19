@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
     <title>Study Mode</title>
     <style>
         body {
-            font-family: "Poppins", Arial, sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -48,7 +45,8 @@
             <div id="flashcard" class="flashcard">
                 <!-- Flashcard content goes here -->
             </div>
-            <div class="study-btn" onclick="nextFlashcard()">Next</div>
+            <button class="study-btn" onclick="showAnswer()">Show Answer</button>
+            <button class="study-btn" onclick="nextFlashcard()">Next</button>
         </div>
     </div>
 
@@ -72,16 +70,17 @@
             }
         }
 
-        // Show the current flashcard
+        // Show the current flashcard (question only)
         function showFlashcard() {
             if (flashcards.length > 0 && currentCardIndex < flashcards.length) {
                 const card = flashcards[currentCardIndex];
                 document.getElementById('flashcard').innerHTML = `
                     <div>
                         <h3>Question: ${card.question}</h3>
-                        <p>Answer: ${card.answer}</p>
+                        <p id="answer" class="answer">Answer: ${card.answer}</p>
                     </div>
                 `;
+                hideAnswer(); // Ensure the answer is hidden when a new flashcard is shown
             }
         }
 
@@ -93,11 +92,38 @@
             }
         }
 
+        // Show the answer for the current flashcard
+        function showAnswer() {
+            const answerElement = document.getElementById("answer");
+            if (answerElement) {
+                answerElement.style.display = "block"; // Reveal the answer
+            }
+        }
+
+        // Hide the answer for the current flashcard
+        function hideAnswer() {
+            const answerElement = document.getElementById("answer");
+            if (answerElement) {
+                answerElement.style.display = "none"; // Hide the answer
+            }
+        }
+
+        // Add an event listener for the "Space" key
+        document.addEventListener("keydown", (event) => {
+            if (event.code === "Space") {
+                event.preventDefault(); // Prevent scrolling when pressing Space
+                const answerElement = document.getElementById("answer");
+                if (answerElement && answerElement.style.display === "none") {
+                    showAnswer(); // Show the answer if it's hidden
+                } else if (answerElement) {
+                    nextFlashcard(); // Show the next card if the answer is already visible
+                }
+            }
+        });
+
         // Load flashcards when the page is ready
         document.addEventListener("DOMContentLoaded", loadFlashcards);
     </script>
-
-</body>
 
 </body>
 </html>

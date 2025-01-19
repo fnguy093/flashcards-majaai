@@ -1,24 +1,52 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcard Manager</title>
+    <title>MayaAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
     <style>
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 95px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0px;
+            background: #fff;
+            border-bottom: 1px solid #dcdcdc;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: "Poppins", Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background-color:#f4f4f4;
         }
+
+        #studyModeLink {
+            background-color:#00b342;
+            border-radius: 5px;
+        }
+
         .container {
             max-width: 800px;
             margin: 20px auto;
-            padding: 20px;
+            padding: 20px 60px;
             background: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            border-radius: 5px;
+            margin-top: 50px;
         }
+
         .header {
             display: flex;
             justify-content: space-between;
@@ -36,39 +64,80 @@
         .flashcard-item {
             padding: 15px;
             margin-bottom: 10px;
-            background: #e9ecef;
             border-radius: 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border: 1px solid #dcdcdc;
         }
         .flashcard-item h3 {
             margin: 0;
-            font-size: 18px;
+            font-size: 1rem;
         }
+
+        .flashcard-item p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
         .options {
             display: flex;
             gap: 10px;
         }
         .options button {
             padding: 5px 10px;
-            font-size: 14px;
-            color: #fff;
+            font-size: 1rem;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
         }
+        .add-flashcard-btn {
+            width: 20%;
+            border: #19AF4D 1px solid;
+            font-family: "Poppins", Arial, sans-serif;
+            border-radius: 5px;
+            color: #19AF4D;
+            background-color: inherit;
+        }
+        .add-flashcard-btn:hover {
+            background: #00b342;
+            color: white;
+            cursor: pointer;
+        }
+
+        #flashcardQuestion {
+            font-family: "Poppins", Arial, sans-serif;
+            border-radius: 5px;
+            border: 1px solid #dcdcdc;
+            font-size: 1rem;
+        }
+
+        #flashcardAnswer {
+            field-sizing: content;
+            resize: none;
+            font-family: "Poppins", Arial, sans-serif;
+            border-radius: 5px;
+            border-color: #dcdcdc;
+            font-size: 1rem;
+        }
+
         .delete-btn {
-            background-color: #dc3545;
+            color: #19AF4D;
+            border: 1px solid #19AF4D;
+            font-family: "Poppins", Arial, sans-serif;
+            background-color: inherit;
         }
         .delete-btn:hover {
-            background-color: #b02a37;
+            color: #158d3f;
         }
         .edit-btn {
-            background-color: #28a745;
+            color: #19AF4D;
+            border: 1px solid #19AF4D;
+            font-family: "Poppins", Arial, sans-serif;
+            background-color: inherit;
         }
         .edit-btn:hover {
-            background-color: #218838;
+            color: #158d3f;
         }
         .flashcard-form {
             margin-bottom: 20px;
@@ -81,6 +150,39 @@
             font-size: 14px;
             width: 40%;
         }
+
+        .study-btn {
+            background-color: #19AF4D;
+            color: white;
+            padding: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .study-btn:hover {
+            background-color: #158d3f;
+        }
+
+        .back-btn {
+            background-color: #19AF4D;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .back-btn:hover {
+            background-color: #158d3f;
+            cursor: pointer;
+        }
+
+        button {
+            font-family: "Poppins", Arial, sans-serif;
+            font-size: 1rem;
+        }
+
     </style>
 </head>
 <body>
@@ -88,22 +190,23 @@
     <div class="container">
         <div class="header">
             <h1>Manage Flashcards</h1>
-            <a id="studyModeLink" href="#">
-                <button>Go to Study Mode</button>
-            </a>
+            <div>
+                <button class="back-btn" onclick="window.location.href='index.html'">Back to decks</button>
+                <a id="studyModeLink" href="#">
+                    <button class="study-btn">Study</button>
+                </a>
+            </div>
         </div>
         
         <div class="flashcard-form">
             <input type="text" id="flashcardQuestion" placeholder="Enter Question">
             <textarea id="flashcardAnswer" placeholder="Enter Answer"></textarea>
-            <button class="add-flashcard-btn" onclick="addFlashcard()">Add</button>
+            <button class="add-flashcard-btn" onclick="addFlashcard()">+ Add</button>
         </div>
         
         <ul class="flashcard-list" id="flashcardList">
         </ul>
     </div>
-
-    <button class="back-btn" onclick="window.location.href='index.html'">Back to Decks</button>
 
     <script>
         let deckName = new URLSearchParams(window.location.search).get("deckName");
@@ -120,7 +223,7 @@
             const deck = decks.find(d => d.name === deckName);
 
             const flashcardList = document.getElementById("flashcardList");
-            flashcardList.innerHTML = ''; // Clear current list
+            flashcardList.innerHTML = ''; 
 
             if (deck && deck.flashcards && deck.flashcards.length > 0) {
                 deck.flashcards.forEach((card, index) => {

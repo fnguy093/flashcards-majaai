@@ -1,52 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MajaAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-    <head>
+    <style>
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .add-deck-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #19AF4D;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .add-deck-btn:hover {
+            background-color: #19AF4D;
+        }
+        .deck-list {
+            list-style: none;
+            padding: 0;
+        }
+        .deck-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .deck-item h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .options {
+            display: flex;
+            gap: 10px;
+        }
+        .options button {
+            padding: 5px 10px;
+            font-size: 14px;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+        }
+        .delete-btn:hover {
+            background-color: #b02a37;
+        }
+        .duplicate-btn {
+            background-color: #17a2b8;
+        }
+        .duplicate-btn:hover {
+            background-color: #117a8b;
+        }
+        .rename-btn {
+            background-color: #ffc107;
+        }
+        .rename-btn:hover {
+            background-color: #e0a800;
+        }
+        .edit-btn {
+            background-color: #28a745;
+        }
+        .edit-btn:hover {
+            background-color: #218838;
+        }
 
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>MajaAI</title>
-        <link rel="stylesheet" href="home.css" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    
-	</head>
+        .flashcard-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 600px;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            z-index: 1000;
+        }
+        .flashcard-container .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .flashcard-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        .flashcard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .flashcard-item p {
+            margin: 0;
+        }
+        .add-flashcard-btn {
+            padding: 10px 20px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #19AF4D;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .add-flashcard-btn:hover {
+            background-color: #19AF4D;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Your Decks</h1>
+            <button class="add-deck-btn" onclick="addDeck()">Add Deck</button>
+        </div>
+        <ul class="deck-list" id="deckList">
+        </ul>
+    </div>
+    <script>
+        function loadDecks() {
+            const deckList = document.getElementById("deckList");
+            deckList.innerHTML = ""; // Clear current deck list
 
-    <body>
+            const decks = JSON.parse(localStorage.getItem("decks")) || [];
+            decks.forEach(deck => {
+                const deckItem = document.createElement("li");
+                deckItem.className = "deck-item";
+                deckItem.innerHTML = `
+                    <h2>${deck.name}</h2>
+                    <div class="options">
+                        <button class="edit-btn" onclick="editDeck(this)">Edit</button>
+                        <button class="rename-btn" onclick="renameDeck(this)">Rename</button>
+                        <button class="duplicate-btn" onclick="duplicateDeck(this)">Duplicate</button>
+                        <button class="delete-btn" onclick="deleteDeck(this)">Delete</button>
+                    </div>
+                `;
+                deckList.appendChild(deckItem);
+            });
+        }
 
-        <header class="header">
+        function addDeck() {
+            const deckName = prompt("Enter the name of the new deck:");
+            if (deckName) {
+                const decks = JSON.parse(localStorage.getItem("decks")) || [];
+                decks.push({ name: deckName, flashcards: [] });  // Initialize empty flashcards array
+                localStorage.setItem("decks", JSON.stringify(decks));
+                loadDecks(); // Reload deck list
+            }
+        }
 
-            <div class="logo">MajaAI</div>
-            <div class="get-started-btn">Get Started</div>
+        function editDeck(button) {
+            const deckItem = button.closest(".deck-item");
+            const deckName = deckItem.querySelector("h2").textContent;
+            window.location.href = `edit-deck.html?deckName=${encodeURIComponent(deckName)}`;
+        }
 
-        </header>
+        function deleteDeck(button) {
+            if (confirm("Are you sure you want to delete this deck?")) {
+                const deckItem = button.closest(".deck-item");
+                const deckName = deckItem.querySelector("h2").textContent;
 
-        <main class="main-content-wrapper">
+                // Remove deck from localStorage
+                const decks = JSON.parse(localStorage.getItem("decks")) || [];
+                const updatedDecks = decks.filter(deck => deck.name !== deckName);
+                localStorage.setItem("decks", JSON.stringify(updatedDecks));
 
-            <div class="main-content">
+                loadDecks(); // Reload deck list
+            }
+        }
 
-                <p class="subheading fade-and-drop-in">Flashcards reinvented with AI</p>
+        function duplicateDeck(button) {
+            const deckItem = button.closest(".deck-item");
+            const deckName = deckItem.querySelector("h2").textContent;
+            const deckList = document.getElementById("deckList");
 
-                <h1 class="main-heading fade-and-drop-in">
-                    Revolutionize your learning with<br/>
-                    AI-powered flashcards
-                </h1>
+            const newDeck = document.createElement("li");
+            newDeck.className = "deck-item";
+            newDeck.innerHTML = `
+                <h2>${deckName} (Copy)</h2>
+                <div class="options">
+                    <button class="edit-btn" onclick="editDeck(this)">Edit</button>
+                    <button class="rename-btn" onclick="renameDeck(this)">Rename</button>
+                    <button class="duplicate-btn" onclick="duplicateDeck(this)">Duplicate</button>
+                    <button class="delete-btn" onclick="deleteDeck(this)">Delete</button>
+                </div>
+            `;
+            deckList.appendChild(newDeck);
+        }
 
-                <p class="description fade-and-drop-in">
-                    Effortlessly master your study material with intelligent flashcard generation.
-                </p>
+        function renameDeck(button) {
+            const deckItem = button.closest(".deck-item");
+            const deckName = deckItem.querySelector("h2");
+            const newName = prompt("Enter the new name for the deck:", deckName.textContent);
+            if (newName) {
+                deckName.textContent = newName;
+            }
+        }
 
-            </div>
-			
-            <div class="button-container">
-
-                <button class="create-btn fade-in">Create New</button>
-                <button class="learn-more-btn fade-in">Learn more</button>
-
-            </div>
-
-        </main>
-
-    </body>
-
+        window.onload = loadDecks;
+    </script>
+</body>
 </html>

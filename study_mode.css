@@ -55,21 +55,25 @@ body {
     align-items: center;
     text-align: center;
     font-weight: 400;
-    font-size: 20;
 }
 
 .flip-card-front {
     background-color: #dcffd8;
     color: black;
     font-weight: 400;
-    margin-top: 10%;
-    margin-bottom: 10%;
+
+
 }
 
 .flip-card-back {
     background-color: #dcffd8;
     color: black;
     transform: rotateY(180deg); /* Position the back side */
+}
+
+#question {
+    align-items: center;
+    justify-content: center;
 }
 
 .container {

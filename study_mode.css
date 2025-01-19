@@ -73,7 +73,14 @@ body {
 
 #question {
     margin-top: 20%;
+    margin-bottom: 20%
 }
+
+#answer {
+    margin-top: 20%;
+    margin-bottom: 20%
+}
+
 
 .container {
     max-width: 60vw;
